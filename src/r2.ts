@@ -18,12 +18,13 @@ export const uploadToR2 = async (filename: string): Promise<void> => {
 
   const file = Bun.file(path.resolve(tmpFolder, filename));
 
+  const fileContent = await file.arrayBuffer();
+
   await R2Client.send(
     new PutObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME,
+      Bucket: process.env.R2_BUCKET,
       Key: filename,
-      ACL: 'public-read',
-      Body: file,
+      Body: fileContent as unknown as string,
     }),
   )
 
